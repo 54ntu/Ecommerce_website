@@ -1,9 +1,15 @@
 import app from "./app";
+import { envConfig } from "./src/config/config";
 
 
 
 
 
-app.listen(3000, () => {
-    console.log(`server is running at port ${3000}`)
-})
+function startServer() {
+    const port = envConfig.port || 3000
+    app.listen(port, () => {
+        console.log(`server is running at port ${port}`)
+    })
+}
+
+startServer();
