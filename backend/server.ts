@@ -1,5 +1,6 @@
 import app from "./app";
 import { envConfig } from "./src/config/config";
+import User from "./src/database/model/user.model";
 
 
 
