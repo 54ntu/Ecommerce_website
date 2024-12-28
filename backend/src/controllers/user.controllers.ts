@@ -13,19 +13,16 @@ class UserController {
             res.status(400).json({ message: "All fields are required" })
             return;
         }
-
         //check whether the user already exists
         const [data] = await User.findAll({
             where: {
                 email: email
             }
         })
-
         if (data) {
             res.status(400).json({ message: "User already exists" })
             return;
         }
-
         //if everything is fined then we just insert the data into the database
 
         await User.create({
@@ -33,7 +30,6 @@ class UserController {
             email,
             password: bcrypt.hashSync(password, 10),
         })
-
         res.status(201).json({ message: "User registered successfully" })
 
     }
