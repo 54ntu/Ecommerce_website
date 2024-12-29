@@ -35,6 +35,48 @@ class UserController {
     }
 
 
+    static async login(req: Request, res: Response) {
+        //get the email and password from the req.body
+        //check email first whether it exists or not
+        //if exists then check the password
+        //if password is correct then generate token and send that token
+        const { email, password } = req.body
+
+        if (!email || !password) {
+            res.status(400).json({
+                message: "please provide email and password"
+            })
+            return;
+        }
+
+        const emailExists = await User.findAll({
+            where: {
+                email: email
+            }
+        })
+
+        if (emailExists.length === 0) {
+            res.status(404).json({
+                message: "email does not exists"
+            })
+        } else {
+            const user = emailExists[0]
+            const isPasswordMatched = bcrypt.compareSync(password, user.password)
+            if (!isPasswordMatched) {
+                res.status(400).json({
+
+                    message: "password doesnot match"
+                })
+            } else {
+                res.status(200).json({
+                    message: "login successfully"
+                })
+            }
+
+        }
+    }
+
+
 }
 
 
