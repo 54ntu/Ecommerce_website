@@ -1,6 +1,7 @@
 import { Request, Response } from "express"
 import User from "../database/model/user.model"
 import bcrypt from "bcrypt"
+import generateToken from "../services/generateToken"
 
 
 
@@ -68,8 +69,13 @@ class UserController {
                     message: "password doesnot match"
                 })
             } else {
+
+                //generate token
+
+                const token = generateToken(user.id)
                 res.status(200).json({
-                    message: "login successfully"
+                    message: "login successfully",
+                    token
                 })
             }
 
