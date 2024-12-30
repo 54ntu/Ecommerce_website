@@ -2,6 +2,8 @@ import { Request, Response } from "express"
 import User from "../database/model/user.model"
 import bcrypt from "bcrypt"
 import generateToken from "../services/generateToken"
+import generateOtp from "../services/generateOtp"
+import sendMail from "../services/sendmail"
 
 
 
@@ -80,6 +82,42 @@ class UserController {
             }
 
         }
+    }
+
+    static async handleForgotPassword(req: Request, res: Response) {
+        const { email } = req.body
+        if (!email) {
+            res.status(400).json({
+                message: "please provide valid email"
+            })
+            return
+        }
+
+        const isEmailExists = await User.findAll({
+            where: {
+                email: email
+            }
+        })
+
+        if (isEmailExists.length === 0) {
+            res.status(404).json({
+                message: "email does not exists"
+            })
+            return;
+        }
+
+        //generate otp and send it through mail
+        const otp = generateOtp()
+        await sendMail({
+            to: email,
+            subject: "Reset Password",
+            text: `Your OTP is ${otp}`
+        })
+
+        res.status(200).json({
+            message: "OTP sent to your email"
+        })
+
     }
 
 
