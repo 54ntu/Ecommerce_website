@@ -84,6 +84,8 @@ class UserController {
         }
     }
 
+
+
     static async handleForgotPassword(req: Request, res: Response) {
         const { email } = req.body
         if (!email) {
@@ -92,20 +94,17 @@ class UserController {
             })
             return
         }
-
         const isEmailExists = await User.findAll({
             where: {
                 email: email
             }
         })
-
         if (isEmailExists.length === 0) {
             res.status(404).json({
                 message: "email does not exists"
             })
             return;
         }
-
         //generate otp and send it through mail
         const otp = generateOtp()
         await sendMail({
@@ -113,13 +112,14 @@ class UserController {
             subject: "Reset Password",
             text: `Your OTP is ${otp}`
         })
-
+        isEmailExists[0].otp = otp.toString()
+        isEmailExists[0].otpGeneratedTime = Date.now().toString()
+        await isEmailExists[0].save()
         res.status(200).json({
             message: "OTP sent to your email"
         })
 
     }
-
 
 }
 
