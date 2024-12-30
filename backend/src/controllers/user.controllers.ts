@@ -6,6 +6,7 @@ import generateOtp from "../services/generateOtp"
 import sendMail from "../services/sendmail"
 import getData from "../services/findData"
 import ApiResponse from "../services/ApiResponse"
+import checkOtpExpiration from "../services/otpExpiry"
 
 
 
@@ -141,14 +142,28 @@ class UserController {
             return;
         }
 
-        const currentTime = Date.now()
         const otpGeneratedTime = user.otpGeneratedTime
-        if (currentTime - parseInt(otpGeneratedTime) > 120000) {
-            ApiResponse(res, 403, "OTP expired😑")
-        } else {
-            ApiResponse(res, 200, "OTP verified successfully😊")
-        }
+        checkOtpExpiration(res, otpGeneratedTime, 120000)
     }
+
+
+    static async resetPassword(req: Request, res: Response) {
+        const { newPassword, confirmPassword } = req.body
+        if (!newPassword || !confirmPassword) {
+            ApiResponse(res, 400, "newpassword and confirmpassword are required")
+            return;
+        }
+
+        if (newPassword !== confirmPassword) {
+            ApiResponse(res, 400, "password does not match")
+            return;
+        }
+
+        
+    }
+
+
+
 
 
 }
