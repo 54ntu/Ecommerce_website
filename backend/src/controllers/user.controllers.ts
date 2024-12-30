@@ -4,6 +4,8 @@ import bcrypt from "bcrypt"
 import generateToken from "../services/generateToken"
 import generateOtp from "../services/generateOtp"
 import sendMail from "../services/sendmail"
+import getData from "../services/findData"
+import ApiResponse from "../services/ApiResponse"
 
 
 
@@ -52,11 +54,7 @@ class UserController {
             return;
         }
 
-        const emailExists = await User.findAll({
-            where: {
-                email: email
-            }
-        })
+        const emailExists = await getData(User, email)
 
         if (emailExists.length === 0) {
             res.status(404).json({
@@ -89,9 +87,7 @@ class UserController {
     static async handleForgotPassword(req: Request, res: Response) {
         const { email } = req.body
         if (!email) {
-            res.status(400).json({
-                message: "please provide valid email"
-            })
+            ApiResponse(res, 400, "please provide email")
             return
         }
         const isEmailExists = await User.findAll({
@@ -100,9 +96,7 @@ class UserController {
             }
         })
         if (isEmailExists.length === 0) {
-            res.status(404).json({
-                message: "email does not exists"
-            })
+            ApiResponse(res, 404, 'email does not exists')
             return;
         }
         //generate otp and send it through mail
@@ -115,11 +109,46 @@ class UserController {
         isEmailExists[0].otp = otp.toString()
         isEmailExists[0].otpGeneratedTime = Date.now().toString()
         await isEmailExists[0].save()
-        res.status(200).json({
-            message: "OTP sent to your email"
-        })
+        return ApiResponse(res, 200, "OTP sent to your email")
 
     }
+
+    static async verifyOTP(req: Request, res: Response) {
+        const { email, otp } = req.body
+        if (!email || !otp) {
+            ApiResponse(res, 400, "please provide email and otp")
+            return;
+        }
+
+        const isEmailExists = await getData(User, email)
+
+        if (isEmailExists.length === 0) {
+            ApiResponse(res, 404, "email does not exists ")
+            return;
+        }
+
+
+        //otp verification
+        const [user] = await User.findAll({
+            where: {
+                email: email,
+                otp: otp
+            }
+        })
+
+        if (!user) {
+            return ApiResponse(res, 400, "Invalid OTP")
+        }
+
+        const currentTime = Date.now()
+        const otpGeneratedTime = user.otpGeneratedTime
+        if (currentTime - parseInt(otpGeneratedTime) > 120000) {
+            ApiResponse(res, 400, "OTP expired")
+        } else {
+            ApiResponse(res, 200, "OTP verified successfully")
+        }
+    }
+
 
 }
 
