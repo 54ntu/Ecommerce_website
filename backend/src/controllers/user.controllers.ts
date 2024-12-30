@@ -116,7 +116,7 @@ class UserController {
     static async verifyOTP(req: Request, res: Response) {
         const { email, otp } = req.body
         if (!email || !otp) {
-            ApiResponse(res, 400, "please provide email and otp")
+            ApiResponse(res, 400, "please provide email and otp😒")
             return;
         }
 
@@ -137,15 +137,16 @@ class UserController {
         })
 
         if (!user) {
-            return ApiResponse(res, 400, "Invalid OTP")
+            ApiResponse(res, 400, "Invalid OTP")
+            return;
         }
 
         const currentTime = Date.now()
         const otpGeneratedTime = user.otpGeneratedTime
         if (currentTime - parseInt(otpGeneratedTime) > 120000) {
-            ApiResponse(res, 400, "OTP expired")
+            ApiResponse(res, 403, "OTP expired😑")
         } else {
-            ApiResponse(res, 200, "OTP verified successfully")
+            ApiResponse(res, 200, "OTP verified successfully😊")
         }
     }
 
