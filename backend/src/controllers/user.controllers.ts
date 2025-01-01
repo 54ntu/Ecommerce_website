@@ -148,9 +148,9 @@ class UserController {
 
 
     static async resetPassword(req: Request, res: Response) {
-        const { newPassword, confirmPassword } = req.body
-        if (!newPassword || !confirmPassword) {
-            ApiResponse(res, 400, "newpassword and confirmpassword are required")
+        const { newPassword, confirmPassword, email } = req.body
+        if (!newPassword || !confirmPassword || !email) {
+            ApiResponse(res, 400, "all fields are required!")
             return;
         }
 
@@ -159,14 +159,17 @@ class UserController {
             return;
         }
 
+        const isEmailExists = await getData(User, email)
+        if (isEmailExists.length === 0) {
+            ApiResponse(res, 404, "email does not exists")
+            return;
+        }
+        isEmailExists[0].password = bcrypt.hashSync(newPassword, 10)
+        await isEmailExists[0].save()
+        ApiResponse(res, 200, "password reset successfully")
 
 
     }
-
-
-
-
-
 }
 
 export default UserController;
