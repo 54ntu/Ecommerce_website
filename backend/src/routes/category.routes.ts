@@ -4,8 +4,8 @@ import userMiddlewares from '../middlewares/user.middlewares';
 const router: Router = express.Router();
 
 
-router.route("/").get(CategoryController.getCategories).post(userMiddlewares.isUserLoggin, CategoryController.addCategory);
-router.route("/:id").patch(CategoryController.updateCategory).delete(CategoryController.deleteCategory);
+router.route("/").get(CategoryController.getCategories).post(userMiddlewares.isUserLoggin, userMiddlewares.isAdmin, CategoryController.addCategory);
+router.route("/:id").patch(userMiddlewares.isUserLoggin, userMiddlewares.isAdmin, CategoryController.updateCategory).delete(userMiddlewares.isUserLoggin, userMiddlewares.isAdmin, CategoryController.deleteCategory);
 
 
 export default router;
