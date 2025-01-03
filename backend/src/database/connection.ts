@@ -1,5 +1,7 @@
 import { Sequelize } from 'sequelize-typescript'
 import { envConfig } from '../config/config'
+import Product from './model/product.models'
+import Category from './model/category.model'
 
 const sequelize = new Sequelize(envConfig.connectionString as string, {
     models: [__dirname + '/model']
@@ -23,5 +25,10 @@ sequelize.sync({ force: false, alter: true }).then(() => { console.log("synced")
 //when force is set to true for migration it will delete all the existing data of the table
 //alter true garda table maa changes vako matra update hunxa without any loss in data of the table
 
+
+
+//relationships between the fields of table
+Product.belongsTo(Category)
+Category.hasMany(Product)
 
 export default sequelize
