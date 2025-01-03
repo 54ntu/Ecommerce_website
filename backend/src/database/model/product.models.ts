@@ -30,7 +30,7 @@ class Product extends Model {
     @Column({
         type: DataType.FLOAT,
     })
-    declare produtprice: number;
+    declare productprice: number;
 
     @Column({
         type: DataType.INTEGER,
