@@ -73,7 +73,7 @@ class UserController {
 
                 //generate token
 
-                const token = generateToken(user.id)
+                const token = generateToken(user.id, user.role)
                 res.status(200).json({
                     message: "login successfully",
                     token
