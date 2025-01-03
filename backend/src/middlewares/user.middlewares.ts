@@ -12,7 +12,7 @@ interface CustomRequest extends Request {
 }
 
 
-class UserMiddleware {
+class UserMiddlewares {
     async isUserLoggin(req: CustomRequest, res: Response, next: NextFunction): Promise<void> {
 
 
@@ -75,4 +75,4 @@ class UserMiddleware {
 
 }
 
-export default new UserMiddleware;
+export default new UserMiddlewares;
