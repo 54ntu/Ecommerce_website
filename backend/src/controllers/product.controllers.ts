@@ -25,7 +25,7 @@ class ProductController {
             productprice: productPrice,
             productQuantity,
             discount: discount || 0,
-            CategoryId: categoryId,
+            categoryId,
             productImageUrl
 
         })
@@ -39,7 +39,8 @@ class ProductController {
     async getProducts(req: Request, res: Response): Promise<void> {
         const products = await Product.findAll({
             include: [{
-                model: Category
+                model: Category,
+                attributes: ['id', 'categoryName']
 
             }]  // this include is used to join the tables
         });
@@ -59,7 +60,8 @@ class ProductController {
             },
 
             include: [{
-                model: Category
+                model: Category,
+                attributes: ['id', 'categoryName']
 
             }]  // this include is used to join the tables
         });
@@ -69,9 +71,10 @@ class ProductController {
 
     async deleteProducts(req: Request, res: Response): Promise<void> {
         const { id } = req.params;
+        console.log(`id we are getting is : ${id}`)
         const products = await Product.findAll({
             where: {
-                id
+                id: id
             },
             include: [{
                 model: Category

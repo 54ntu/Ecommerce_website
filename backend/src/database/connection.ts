@@ -28,7 +28,7 @@ sequelize.sync({ force: false, alter: false }).then(() => { console.log("synced"
 
 
 //relationships between the fields of table
-Product.belongsTo(Category)
-Category.hasMany(Product)
+Product.belongsTo(Category, { foreignKey: 'categoryId' })
+Category.hasMany(Product, { foreignKey: 'categoryId' })
 
 export default sequelize
