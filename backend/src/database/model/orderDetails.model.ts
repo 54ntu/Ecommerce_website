@@ -8,9 +8,6 @@ import { Table, Column, Model, DataType } from "sequelize-typescript";
 })
 
 class OrderDetails extends Model {
-
-
-
     @Column({
         primaryKey: true,
         type: DataType.UUID,
