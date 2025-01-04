@@ -12,6 +12,4 @@ router.route("/verify-otp").post(errorHandler(UserController.verifyOTP));
 router.route("/reset-pass").post(errorHandler(UserController.resetPassword));
 
 
-
-
 export default router;
