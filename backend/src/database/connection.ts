@@ -31,4 +31,7 @@ sequelize.sync({ force: false, alter: false }).then(() => { console.log("synced"
 Product.belongsTo(Category, { foreignKey: 'categoryId' })
 Category.hasMany(Product, { foreignKey: 'categoryId' })
 
+
+
+
 export default sequelize
