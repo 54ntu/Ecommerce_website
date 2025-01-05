@@ -3,6 +3,7 @@ import Order from "../database/model/order.model";
 import OrderDetails from "../database/model/orderDetails.model";
 import Payment from "../database/model/payment.model";
 import { PaymentMode } from "../globals/types";
+import axios from "axios";
 
 
 interface IProduct {
@@ -25,8 +26,10 @@ class OrderController {
     async createOrder(req: OrderRequest, res: Response) {
         const userId = req.user?.id
         const { phoneNumber, address, totalAmount, paymentMethod } = req.body
-        const products: IProduct[] = req.body
-        if (phoneNumber || !address || !totalAmount || products.length == 0) {
+        const products: IProduct[] = req.body.products
+        console.log(products.length)
+        console.log(paymentMethod)
+        if (!phoneNumber || !address || !totalAmount || products.length == 0) {
             res.status(400).json({
                 message: "please provide phoneNumber,shipping address, totalAmount,products"
             })
@@ -57,10 +60,20 @@ class OrderController {
                 PaymentMode: paymentMethod
             })
 
-        } else if (paymentMethod == PaymentMode.esewa) {
-            await Payment.create({
-
+        } else if (paymentMethod == PaymentMode.khalti) {
+            const data = {
+                return_url: "http://localhost:5173/",
+                website_url: "http://localhost:5173/",
+                amount: totalAmount * 100,
+                purchase_order_id: orderData.id,
+                purchase_order_name: "order_" + orderData.id
+            }
+            const response = await axios.post("https://dev.khalti.com/api/v2//epayment/initiate/", data, {
+                headers: {
+                    Authorization: "Key f1b854113d2c424f820427cadb100265"
+                }
             })
+            console.log(`response for the khalti api ${response}`)
 
         } else {
 
