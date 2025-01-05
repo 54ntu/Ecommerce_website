@@ -60,7 +60,9 @@ class OrderController {
                 PaymentMode: paymentMethod
             })
 
-        } else if (paymentMethod == PaymentMode.khalti) {
+        } else if (paymentMethod == PaymentMode.Khalti) {
+            console.log('total amount i am is :', totalAmount)
+            console.log("hello i am khalti")
             const data = {
                 return_url: "http://localhost:5173/",
                 website_url: "http://localhost:5173/",
@@ -68,12 +70,22 @@ class OrderController {
                 purchase_order_id: orderData.id,
                 purchase_order_name: "order_" + orderData.id
             }
-            const response = await axios.post("https://dev.khalti.com/api/v2//epayment/initiate/", data, {
-                headers: {
-                    Authorization: "Key f1b854113d2c424f820427cadb100265"
-                }
-            })
-            console.log(`response for the khalti api ${response}`)
+
+            console.log(`hello i am data ${data.amount}`)
+
+            try {
+                const response = await axios.post("https://dev.khalti.com/api/v2/epayment/initiate/", data, {
+                    headers: {
+                        'Authorization': 'Key f1b854113d2c424f820427cadb100265',
+                    }
+                });
+                console.log(response);
+            } catch (error) {
+                console.log(error)
+
+            }
+
+
 
         } else {
 

@@ -22,7 +22,7 @@ class Payment extends Model {
 
 
     @Column({
-        type: DataType.ENUM(PaymentMode.khalti, PaymentMode.esewa, PaymentMode.COD),
+        type: DataType.ENUM(PaymentMode.Khalti, PaymentMode.Esewa, PaymentMode.COD),
         defaultValue: PaymentMode.COD
     })
 
